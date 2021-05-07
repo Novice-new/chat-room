@@ -103,7 +103,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['userInfo', 'groupChat', 'privateChat']),
+    ...mapState(['userInfo', 'groupChat', 'privateChat', 'userOnline']),
     privateMsg() {
       const result = this.privateChat.filter((item) => {
         if (item.to.username === this.chatTo.username) {
@@ -117,6 +117,8 @@ export default {
   methods: {
     ...mapMutations(['addGroupMsg', 'addPrivateMsg']),
     sendMsg() {
+      console.log(1);
+      // 判断发送内容是否为空
       if (!this.content) {
         this.$message({
           showClose: true,
@@ -125,6 +127,28 @@ export default {
         });
         return;
       }
+
+      // 先判断聊天对象是否在线
+      let isOnline = false;
+      if (this.chatTo === null) {
+        isOnline = true;
+      } else {
+        // 查看当前在线用户中是否有该用户
+        const flag = this.userOnline.some((value) => value.username === this.chatTo.username);
+        if (flag) {
+          isOnline = true;
+        }
+      }
+      if (!isOnline) {
+        this.$message({
+          showClose: true,
+          message: '对方已下线',
+          type: 'warning',
+        });
+        return;
+      }
+
+      // 整理数据向服务器发送消息
       const chatData = {
         from: this.userInfo,
         to: this.chatTo,
@@ -132,8 +156,12 @@ export default {
         time: Date.now(),
       };
       socket.emit('msg', chatData);
+
+      // 发送之后将消息框置空
       this.content = '';
-      // 由于使自己发的消息所以固定在右边
+
+      // 在store中添加本次发送的消息
+      // 由于是自己发的消息所以固定在右边
       chatData.type = 'right';
       // 如果是发送给所有人
       if (this.chatTo === null) {
@@ -150,6 +178,7 @@ export default {
           },
         });
       }
+      // 使滚动条保持在底部
       this.scrollToBottom();
     },
     handleSocket() {
@@ -163,16 +192,7 @@ export default {
         if (newDate.to === null) {
           this.addGroupMsg(newDate);
         } else {
-          console.log(chunk);
           // 如果是私聊由于使别人发给你的所以私聊对象应该是from
-          if (chunk.isOffline) {
-            this.$message({
-              showClose: true,
-              message: '对方已下线',
-              type: 'warning',
-            });
-            return;
-          }
           this.addPrivateMsg({
             chatTo: newDate.from,
             msg: {

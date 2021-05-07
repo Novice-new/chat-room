@@ -12,7 +12,7 @@
     <div class="my-chats">
       <div
         v-show="showGroup"
-        class="chat-item"
+        class="chat-item group"
         @click="alterChat(null)"
       >
         <img
@@ -26,8 +26,8 @@
         <div class="chat-time">{{groupLastMsg.time}}</div>
       </div>
       <div
-        class="chat-item"
-        v-for="chat in chatList"
+        class="chat-item previte"
+        v-for="(chat) in chatList"
         :key="chat.id"
         @click="handleClick(chat.to)"
       >

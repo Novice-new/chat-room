@@ -51,23 +51,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           socket.emit('login', this.userValidateForm);
-          socket.on('login', (chunk) => {
-            if (chunk) {
-              this.$store.state.userInfo = chunk;
-              this.$router.push({ name: 'Home' });
-              this.$message({
-                showClose: true,
-                message: '登录成功',
-                type: 'success',
-              });
-            } else {
-              this.$message({
-                showClose: true,
-                message: '用户不存在',
-                type: 'error',
-              });
-            }
-          });
         } else {
           this.$message({
             showClose: true,
@@ -80,6 +63,28 @@ export default {
     register() {
       this.$router.push({ name: 'Register' });
     },
+    handleSocket() {
+      socket.on('login', (chunk) => {
+        if (chunk) {
+          this.$store.state.userInfo = chunk;
+          this.$router.push({ name: 'Home' });
+          this.$message({
+            showClose: true,
+            message: '登录成功',
+            type: 'success',
+          });
+        } else {
+          this.$message({
+            showClose: true,
+            message: '用户不存在',
+            type: 'error',
+          });
+        }
+      });
+    },
+  },
+  created() {
+    this.handleSocket();
   },
 };
 </script>

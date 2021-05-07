@@ -70,10 +70,18 @@
           display: flex;
           flex-direction: column;
           .chat-item{
+            margin: 3px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
+            background-color: #F2F2F2;
+            &:nth-of-type(1){
+              background-color: #F5F0DC;
+            }
+            &:nth-of-type(2){
+              background-color: #E1EAF3;
+            }
             img{
               width: 50px;
               height: 50px;

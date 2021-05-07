@@ -44,7 +44,6 @@
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
-        :before-remove="beforeRemove"
       >
         <img
           v-if="ruleForm.imgUrl"
@@ -114,22 +113,6 @@ export default {
             img: this.ruleForm.imgUrl,
           };
           socket.emit('register', data);
-          socket.on('register', (chunk) => {
-            if (chunk.state === 'success') {
-              this.$message({
-                showClose: true,
-                message: chunk.msg,
-                type: 'success',
-              });
-              this.$router.push({ name: 'Login' });
-            } else {
-              this.$message({
-                showClose: true,
-                message: chunk.msg,
-                type: 'error',
-              });
-            }
-          });
         } else {
           this.$message({
             showClose: true,
@@ -163,9 +146,27 @@ export default {
       }
       return isQualified;
     },
-    beforeRemove() {
-      console.log('remove');
+    handleSocket() {
+      socket.on('register', (chunk) => {
+        if (chunk.state === 'success') {
+          this.$message({
+            showClose: true,
+            message: chunk.msg,
+            type: 'success',
+          });
+          this.$router.push({ name: 'Login' });
+        } else {
+          this.$message({
+            showClose: true,
+            message: chunk.msg,
+            type: 'error',
+          });
+        }
+      });
     },
+  },
+  created() {
+    this.handleSocket();
   },
 };
 </script>

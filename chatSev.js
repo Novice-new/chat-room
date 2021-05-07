@@ -23,11 +23,13 @@ module.exports = function (server) {
           socket,
         })
         curUser = result;
-        socket.emit('login', result);
+        // 返回成功登陆的信息
+        socket.emit('login', curUser);
         // 用户登录成功后告诉其他用户有新用户登录
         socket.broadcast.emit('userin', curUser);
         return;
       }
+      // 用户不存在返回失败消息
       socket.emit('login', false);
     })
 
@@ -43,14 +45,8 @@ module.exports = function (server) {
       } else {
         const toSocket = user.find(item => {
           return item.userInfo.username === chunk.to.username;
-        });
-        if (toSocket) {
-          toSocket.socket.emit('msg', chunk);
-        } else {
-          socket.emit('msg', {
-            isOffline: true,
-          });
-        }
+        }).socket;
+        toSocket.emit('msg', chunk);
       }
     })
 
@@ -75,12 +71,10 @@ module.exports = function (server) {
 
     // 登出
     socket.on('disconnect', () => {
-      console.log("登出");
       user = user.filter(item => item.userInfo.username !== curUser.username);
       socket.broadcast.emit('userout', curUser);
     })
     socket.on('logout', () => {
-      console.log("logout");
       user = user.filter(item => item.userInfo.username !== curUser.username);
       socket.broadcast.emit('userout', curUser);
     });

@@ -7,10 +7,7 @@
     >
     <span class="title">Welcome to chart-romm</span>
     <div class="user">
-      <el-dropdown
-        trigger="click"
-        @command="handleCommand"
-      >
+      <el-dropdown @command="handleCommand">
         <div class="name">hello {{$store.state.userInfo.username}}</div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="logout">退出登录</el-dropdown-item>

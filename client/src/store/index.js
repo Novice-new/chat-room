@@ -53,7 +53,7 @@ export default new Vuex.Store({
         } else {
           result.msgs = [payload.msg];
         }
-        state.privateChat.unshift(result);
+        state.privateChat.push(result);
       } else {
         state.privateChat[index].msgs.push(payload.msg);
       }

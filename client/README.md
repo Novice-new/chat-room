@@ -1,4 +1,4 @@
-# chat-room
+# chat-room-clinet
 
 ## Project setup
 ```
