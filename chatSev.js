@@ -1,6 +1,7 @@
 const socketIO = require('socket.io');
 const userSev = require('./service/userSev');
-const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 let user = [];
 
 module.exports = function (server) {
@@ -78,9 +79,10 @@ module.exports = function (server) {
       user = user.filter(item => item.userInfo.username !== curUser.username);
       socket.broadcast.emit('userout', curUser);
     })
-    socket.on('logout', chunk => {
+    socket.on('logout', () => {
       console.log("logout");
-      user = user.filter(item => item.userInfo.username !== chunk.username);
+      user = user.filter(item => item.userInfo.username !== curUser.username);
+      socket.broadcast.emit('userout', curUser);
     });
 
     // 注册
@@ -99,6 +101,12 @@ module.exports = function (server) {
           msg: '成功添加',
         })
       }
+    })
+
+    // 更新头像（删除旧头像）
+    socket.on('updateAvater', chunk => {
+      const oldPath = path.resolve(__dirname, "./client/public", chunk);
+      fs.unlink(oldPath)
     })
   })
 }

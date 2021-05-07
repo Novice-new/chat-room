@@ -44,6 +44,7 @@
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
+        :before-remove="beforeRemove"
       >
         <img
           v-if="ruleForm.imgUrl"
@@ -155,7 +156,15 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!');
       }
-      return (isJPG || isPNG) && isLt2M;
+      const isQualified = (isJPG || isPNG) && isLt2M;
+      // 如果当前文件满足要求并且用户已经上传了一个头像那么就请求删除之前保存的头像
+      if (isQualified && this.ruleForm.imgUrl) {
+        socket.emit('updateAvater', this.ruleForm.imgUrl);
+      }
+      return isQualified;
+    },
+    beforeRemove() {
+      console.log('remove');
     },
   },
 };

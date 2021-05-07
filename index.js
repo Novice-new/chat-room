@@ -27,10 +27,6 @@ app.use(express.static(path.resolve(__dirname, "./client/dist")));
 // 上传文件中间件
 app.use('/upload', require('./uploadMid'));
 
-app.get("/socket.io", (req, res) => {
-  console.log(req.headers.host);
-})
-
 require('./chatSev')(server);
 server.listen(9527, () => {
   console.log("server listening 9527");
