@@ -1,3 +1,4 @@
+// 处理图片上传
 const multer = require('multer');
 const path = require('path')
 const storage = multer.diskStorage({

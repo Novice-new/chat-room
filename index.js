@@ -22,6 +22,7 @@ app.use(
 );
 
 // 静态文件中间件
+// 静态文件默认为打包后的前端dist目录
 app.use(express.static(path.resolve(__dirname, "./client/dist")));
 
 // 上传文件中间件
